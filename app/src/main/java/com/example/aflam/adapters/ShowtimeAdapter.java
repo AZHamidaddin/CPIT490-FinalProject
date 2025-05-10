@@ -6,14 +6,25 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
-import com.example.aflam.R;          // ← add this
+import com.example.aflam.R;
+import java.util.ArrayList;
 import java.util.List;
 
 public class ShowtimeAdapter extends RecyclerView.Adapter<ShowtimeAdapter.VH> {
-    private final List<String> showtimes;
+    private List<String> showtimes = new ArrayList<>();
 
-    public ShowtimeAdapter(List<String> showtimes) {
-        this.showtimes = showtimes;
+    public ShowtimeAdapter(List<String> initialData) {
+        if (initialData != null) this.showtimes = initialData;
+    }
+
+    /** Call this to update the list of times */
+    public void setData(List<String> newShowtimes) {
+        if (newShowtimes != null) {
+            this.showtimes = newShowtimes;
+        } else {
+            this.showtimes = new ArrayList<>();
+        }
+        notifyDataSetChanged();
     }
 
     @NonNull
@@ -31,7 +42,7 @@ public class ShowtimeAdapter extends RecyclerView.Adapter<ShowtimeAdapter.VH> {
 
     @Override
     public int getItemCount() {
-        return showtimes == null ? 0 : showtimes.size();
+        return showtimes.size();
     }
 
     static class VH extends RecyclerView.ViewHolder {

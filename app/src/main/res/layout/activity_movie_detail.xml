@@ -3,57 +3,65 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="8dp">
+    android:padding="16dp">
 
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal">
 
+        <!-- Poster ImageView with the correct ID -->
         <ImageView
             android:id="@+id/ivPoster"
-            android:layout_width="match_parent"
-            android:layout_height="250dp"
-            android:scaleType="centerCrop"/>
+            android:layout_width="200dp"
+            android:layout_height="300dp"
+            android:scaleType="centerCrop"
+            android:contentDescription="@string/movie_poster" />
 
+        <!-- Movie title -->
         <TextView
             android:id="@+id/tvTitle"
-            android:layout_marginTop="8dp"
-            android:textSize="20sp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="24sp"
             android:textStyle="bold"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            android:layout_marginTop="16dp" />
 
-        <TextView
-            android:id="@+id/tvLang"
-            android:layout_marginTop="4dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
-
-        <TextView
-            android:id="@+id/tvGenre"
-            android:layout_marginTop="4dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
-
+        <!-- Description -->
         <TextView
             android:id="@+id/tvDesc"
-            android:layout_marginTop="8dp"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp" />
 
+        <!-- Language -->
         <TextView
+            android:id="@+id/tvLanguage"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp" />
+
+        <!-- Genre -->
+        <TextView
+            android:id="@+id/tvGenre"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp" />
+
+        <!-- Showtimes list -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:text="Showtimes"
             android:textStyle="bold"
-            android:layout_marginTop="12dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            android:layout_marginTop="16dp" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rvShowtimes"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingTop="4dp"/>
+            android:layout_marginTop="8dp" />
 
     </LinearLayout>
 </ScrollView>

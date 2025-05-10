@@ -5,7 +5,6 @@ import java.io.Serializable;
 import java.util.List;
 
 public class Movie implements Serializable {
-
     @SerializedName("_id")
     private String id;
 
@@ -22,26 +21,25 @@ public class Movie implements Serializable {
     private String language;
 
     @SerializedName("Genre")
-    private List<String> genre;
-
-    @SerializedName("timings")
-    private List<String> timings;
+    private List<String> genre;        // ← add this
 
     @SerializedName("Parent")
     private String parent;
 
-    // ---- Getters ----
-    public String getId()           { return id; }
-    public String getTitle()        { return title; }
-    public String getDescription()  { return description; }
-    public String getImageUrl()     { return imageUrl; }
-    public String getLanguage()     { return language; }
-    public List<String> getGenre()  { return genre; }
-    public List<String> getTimings(){ return timings; }
-    public String getParent()       { return parent; }
+    @SerializedName("Timings")
+    private List<Timing> timings;
 
-    // ---- Setter for imageUrl ----
-    public void setImageUrl(String imageUrl) {
-        this.imageUrl = imageUrl;
-    }
+    // ---- Getters ----
+    public String getId()              { return id; }
+    public String getTitle()           { return title; }
+    public String getDescription()     { return description; }
+    public String getImageUrl()        { return imageUrl; }
+    public String getLanguage()        { return language; }
+    public List<String> getGenre()     { return genre; }      // ← and this
+    public String getParent()          { return parent; }
+    public List<Timing> getTimings()   { return timings; }
+
+    // ---- Setters (used by flatten step) ----
+    public void setImageUrl(String url)      { this.imageUrl = url; }
+    public void setTimings(List<Timing> t)   { this.timings = t; }
 }

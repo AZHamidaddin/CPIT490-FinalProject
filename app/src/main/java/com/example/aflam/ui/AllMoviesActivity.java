@@ -3,8 +3,6 @@ package com.example.aflam.ui;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-import android.widget.EditText;
-import android.widget.ImageButton;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -14,14 +12,15 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.aflam.R;
 import com.example.aflam.adapters.MovieAdapter;
 import com.example.aflam.models.Movie;
+import com.example.aflam.models.Timing;
 import com.example.aflam.network.ApiClient;
 import com.example.aflam.network.ApiService;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.LinkedHashMap;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
+import java.util.Set;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -30,11 +29,6 @@ import retrofit2.Response;
 public class AllMoviesActivity extends AppCompatActivity {
     private RecyclerView rvAllMovies;
     private MovieAdapter adapter;
-    private EditText etSearch;
-    private ImageButton btnSearch;
-
-    // Final list for adapter
-    private List<Movie> displayList = new ArrayList<>();
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -42,125 +36,125 @@ public class AllMoviesActivity extends AppCompatActivity {
         setContentView(R.layout.activity_all_movies);
 
         rvAllMovies = findViewById(R.id.rvAllMovies);
-        etSearch    = findViewById(R.id.etSearch);
-        btnSearch   = findViewById(R.id.btnSearch);
-
         rvAllMovies.setLayoutManager(new GridLayoutManager(this, 2));
-        adapter = new MovieAdapter(new ArrayList<>(), m -> {
+
+        adapter = new MovieAdapter(new ArrayList<>(), movie -> {
             Intent i = new Intent(this, MovieDetailActivity.class);
-            i.putExtra("movieId", m.getId());
+            i.putExtra("movieId", movie.getId());
             startActivity(i);
         });
         rvAllMovies.setAdapter(adapter);
 
-        fetchAndGroupMovies();
-
-        btnSearch.setOnClickListener(v -> {
-            String q = etSearch.getText().toString().trim().toLowerCase();
-            List<Movie> filtered = new ArrayList<>();
-            for (Movie m : displayList) {
-                if (m.getTitle().toLowerCase().contains(q)) {
-                    filtered.add(m);
-                }
-            }
-            adapter.setData(filtered);
-        });
+        fetchAndMergeMovies();
     }
 
-    private void fetchAndGroupMovies() {
+    private void fetchAndMergeMovies() {
         ApiService svc = ApiClient.getClient().create(ApiService.class);
         svc.getAllMovies().enqueue(new Callback<List<Movie>>() {
             @Override
             public void onResponse(Call<List<Movie>> call, Response<List<Movie>> resp) {
-                if (resp.isSuccessful() && resp.body() != null) {
-                    List<Movie> raw = resp.body();
-
-                    // 1) group
-                    List<List<Movie>> groups = groupByNormalizedTitle(raw);
-
-                    // 2) flatten & prioritize
-                    displayList = flattenAndPrioritize(groups);
-
-                    // 3) display
-                    adapter.setData(displayList);
-                    Log.d("AllMoviesActivity", "Unique movies: " + displayList.size());
-                } else {
-                    Log.e("AllMoviesActivity", "Fetch failed: HTTP " + resp.code());
+                if (!resp.isSuccessful() || resp.body() == null) {
+                    Log.e("AllMovies", "Empty or error response: " + resp.code());
+                    return;
                 }
+
+                List<Movie> raw = resp.body();
+
+                // 1) Group similar titles
+                List<List<Movie>> groups = mergeMoviesByTitle(raw);
+
+                // 2) Flatten each group (merge showtimes + pick best image)
+                List<Movie> flat = flattenGroups(groups);
+
+                // 3) Feed to adapter
+                adapter.setData(flat);
+                Log.d("AllMovies", "Displaying " + flat.size() + " movies");
             }
 
             @Override
             public void onFailure(Call<List<Movie>> call, Throwable t) {
-                Log.e("AllMoviesActivity", "Network failure", t);
+                Log.e("AllMovies", "Network failure", t);
             }
         });
     }
 
-    /**
-     * Creates groups via a LinkedHashMap keyed by the normalized title.
-     * Ensures each movie only belongs to one group.
-     */
-    private List<List<Movie>> groupByNormalizedTitle(List<Movie> movies) {
-        Map<String, List<Movie>> map = new LinkedHashMap<>();
-        for (Movie m : movies) {
-            String norm = normalize(m.getTitle());
-            String foundKey = null;
-            // find an existing key that matches/includes this norm
-            for (String key : map.keySet()) {
-                if (key.contains(norm) || norm.contains(key)) {
-                    foundKey = key;
-                    break;
+    // ————————————————
+    // 1) mergeMoviesByTitle (exactly your React logic) :contentReference[oaicite:0]{index=0}:contentReference[oaicite:1]{index=1}
+    private List<List<Movie>> mergeMoviesByTitle(List<Movie> movies) {
+        List<List<Movie>> groups = new ArrayList<>();
+        Set<Integer> visited = new HashSet<>();
+
+        for (int i = 0; i < movies.size(); i++) {
+            if (visited.contains(i)) continue;
+            Movie mi = movies.get(i);
+            String normA = normalize(mi.getTitle());
+            List<Movie> group = new ArrayList<>();
+            group.add(mi);
+            visited.add(i);
+
+            for (int j = i + 1; j < movies.size(); j++) {
+                if (visited.contains(j)) continue;
+                Movie mj = movies.get(j);
+                String normB = normalize(mj.getTitle());
+                if (normA.contains(normB) || normB.contains(normA)) {
+                    group.add(mj);
+                    visited.add(j);
                 }
             }
-            if (foundKey != null) {
-                map.get(foundKey).add(m);
-            } else {
-                List<Movie> newGroup = new ArrayList<>();
-                newGroup.add(m);
-                map.put(norm, newGroup);
-            }
+            groups.add(group);
         }
-        return new ArrayList<>(map.values());
+
+        Collections.sort(groups, (a, b) ->
+                a.get(0).getTitle()
+                        .compareToIgnoreCase(b.get(0).getTitle())
+        );
+        return groups;
     }
 
-    /**
-     * From each group pick the first movie, override its imageUrl by priority,
-     * and return the flat list.
-     */
-    private List<Movie> flattenAndPrioritize(List<List<Movie>> groups) {
+    private String normalize(String s) {
+        if (s == null) return "";
+        return s.toLowerCase()
+                .replaceAll("[^a-z0-9]+", "")
+                .trim();
+    }
+
+    // ————————————————
+    // 2) flattenGroups: merge timings & pick best poster
+    private List<Movie> flattenGroups(List<List<Movie>> groups) {
         List<Movie> flat = new ArrayList<>();
-        List<String> priority = Arrays.asList("VOX", "Muvi", "Empire", "AMC");
+        List<String> priority = List.of("VOX", "Muvi", "Empire", "AMC");
+
         for (List<Movie> grp : groups) {
             Movie main = grp.get(0);
-            String best = pickBestImageUrl(grp, priority);
-            main.setImageUrl(best);
+
+            // pick best image
+            String bestImg = getBestImage(grp, priority);
+            main.setImageUrl(bestImg);
+
+            // merge all showtimes
+            Set<Timing> merged = new HashSet<>();
+            for (Movie m : grp) {
+                if (m.getTimings() != null) {
+                    merged.addAll(m.getTimings());
+                }
+            }
+            main.setTimings(new ArrayList<>(merged));
+
             flat.add(main);
         }
         return flat;
     }
 
-    /** Normalize exactly like your React code */
-    private String normalize(String s) {
-        return s == null
-                ? ""
-                : s.toLowerCase()
-                .replaceAll("[^a-z0-9]+", "")
-                .trim();
-    }
-
-    /** Mirror getPrioritizedImageUrl from React */
-    private String pickBestImageUrl(List<Movie> group, List<String> priority) {
-        for (String src : priority) {
-            for (Movie m : group) {
+    private String getBestImage(List<Movie> grp, List<String> priority) {
+        for (String p : priority) {
+            for (Movie m : grp) {
                 if (m.getParent() != null
-                        && m.getParent().equalsIgnoreCase(src)
-                        && m.getImageUrl() != null
-                        && !m.getImageUrl().isEmpty()) {
+                        && m.getParent().equalsIgnoreCase(p)
+                        && m.getImageUrl() != null) {
                     return m.getImageUrl();
                 }
             }
         }
-        // fallback to first one's URL
-        return group.get(0).getImageUrl();
+        return grp.get(0).getImageUrl();
     }
 }
