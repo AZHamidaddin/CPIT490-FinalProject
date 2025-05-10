@@ -1,4 +1,3 @@
-// app/src/main/java/com/example/aflam/ui/HomeActivity.java
 package com.example.aflam.ui;
 
 import android.content.Intent;
@@ -9,6 +8,7 @@ import android.util.Log;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.aflam.R;
@@ -16,7 +16,7 @@ import com.example.aflam.adapters.MovieAdapter;
 import com.example.aflam.adapters.OfferAdapter;
 import com.example.aflam.models.Movie;
 import com.example.aflam.models.Offer;
-import com.example.aflam.models.OffersResponse;   // ← import this
+import com.example.aflam.models.OffersResponse;
 import com.example.aflam.network.ApiClient;
 import com.example.aflam.network.ApiService;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -39,22 +39,22 @@ public class HomeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
-        rvMovies      = findViewById(R.id.rvMovies);
-        rvOffers      = findViewById(R.id.rvOffers);
-        fabRecommend  = findViewById(R.id.fabRecommend);
+        rvMovies     = findViewById(R.id.rvMovies);
+        rvOffers     = findViewById(R.id.rvOffers);
+        fabRecommend = findViewById(R.id.fabRecommend);
 
-        // Movies grid (2 columns)
+        // 1) Movies grid: 2-column vertical scroll
         rvMovies.setLayoutManager(new GridLayoutManager(this, 2));
         movieAdapter = new MovieAdapter(new ArrayList<>(), movie -> {
-            Intent intent = new Intent(this, MovieDetailActivity.class);
-            intent.putExtra("movieId", movie.getId());
-            startActivity(intent);
+            Intent i = new Intent(this, MovieDetailActivity.class);
+            i.putExtra("movieId", movie.getId());
+            startActivity(i);
         });
         rvMovies.setAdapter(movieAdapter);
 
-        // Offers slider (horizontal)
+        // 2) Offers slider: horizontal LinearLayoutManager
         rvOffers.setLayoutManager(
-                new GridLayoutManager(this, 1, RecyclerView.HORIZONTAL, false)
+                new LinearLayoutManager(this, RecyclerView.HORIZONTAL, false)
         );
         offerAdapter = new OfferAdapter(new ArrayList<>(), offer -> {
             // Open offer URL in browser
@@ -63,11 +63,12 @@ public class HomeActivity extends AppCompatActivity {
         });
         rvOffers.setAdapter(offerAdapter);
 
-        // (Optional) FAB click
+        // 3) Optional FAB action
         fabRecommend.setOnClickListener(v -> {
-            // your logic here
+            // TODO: your recommendation logic
         });
 
+        // Fetch data
         fetchMovies();
         fetchOffers();
     }

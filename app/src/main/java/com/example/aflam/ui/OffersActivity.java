@@ -1,4 +1,3 @@
-// app/src/main/java/com/example/aflam/ui/OffersActivity.java
 package com.example.aflam.ui;
 
 import android.content.Intent;
@@ -8,13 +7,13 @@ import android.util.Log;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.aflam.R;
 import com.example.aflam.adapters.OfferAdapter;
 import com.example.aflam.models.Offer;
-import com.example.aflam.models.OffersResponse;    // ← make sure this is imported
+import com.example.aflam.models.OffersResponse;
 import com.example.aflam.network.ApiClient;
 import com.example.aflam.network.ApiService;
 
@@ -35,10 +34,11 @@ public class OffersActivity extends AppCompatActivity {
         setContentView(R.layout.activity_offers);
 
         rvOffers = findViewById(R.id.rvOffersPage);
-        rvOffers.setLayoutManager(new GridLayoutManager(this, 2));
-
+        rvOffers.setLayoutManager(
+                new LinearLayoutManager(this, RecyclerView.HORIZONTAL, false)
+        );
         adapter = new OfferAdapter(new ArrayList<>(), offer -> {
-            // When an offer is clicked, open its URL
+            // Open offer URL in browser
             Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse(offer.getUrl()));
             startActivity(i);
         });
@@ -60,7 +60,6 @@ public class OffersActivity extends AppCompatActivity {
                     Log.e("OffersActivity", "HTTP " + resp.code());
                 }
             }
-
             @Override
             public void onFailure(Call<OffersResponse> call, Throwable t) {
                 Log.e("OffersActivity", "Network error", t);

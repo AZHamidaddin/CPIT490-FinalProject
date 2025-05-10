@@ -1,47 +1,57 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    android:fitsSystemWindows="true"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <!-- Vertical stack: movies then offers -->
+    <!-- Main vertical stack -->
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:padding="8dp">
+        android:padding="8dp"
+        android:paddingTop="?android:attr/actionBarSize">
 
-        <!-- 1) Now Showing (movies grid) -->
+        <!-- 1) Movies Grid fills remaining space -->
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rvMovies"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
             android:clipToPadding="false"
-            android:paddingBottom="8dp"/>
+            android:paddingTop="4dp"
+            android:paddingBottom="8dp" />
 
-        <!-- 2) Featured Offers label -->
+        <!-- 2) Spacer between sections -->
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="12dp" />
+
+        <!-- 3) Offers Header -->
         <TextView
+            android:id="@+id/tvOffersHeader"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Featured Offers"
-            android:textSize="16sp"
+            android:textSize="18sp"
             android:textStyle="bold"
-            android:paddingTop="4dp"
-            android:paddingBottom="4dp"/>
+            android:textColor="@android:color/black"
+            android:layout_marginBottom="4dp" />
 
-        <!-- 3) Offers slider: fixed height so it’s always visible -->
+        <!-- 4) Offers Slider wraps its cards (poster+title) -->
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rvOffers"
             android:layout_width="match_parent"
-            android:layout_height="140dp"
+            android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:clipToPadding="false"
-            android:paddingStart="4dp"
-            android:paddingEnd="4dp"/>
+            android:paddingStart="8dp"
+            android:paddingEnd="8dp" />
+
     </LinearLayout>
 
-    <!-- Floating action button -->
+    <!-- Floating star button in bottom-right -->
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fabRecommend"
         android:layout_width="wrap_content"
@@ -49,5 +59,6 @@
         android:layout_gravity="bottom|end"
         android:layout_margin="16dp"
         android:src="@android:drawable/btn_star_big_on"
-        android:contentDescription="Recommend"/>
+        android:contentDescription="Recommend" />
+
 </FrameLayout>
