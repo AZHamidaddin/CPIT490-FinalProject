@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:fitsSystemWindows="true"
+    android:orientation="vertical"
+    android:background="#121212"
+    android:padding="16dp"
+    android:paddingTop="?attr/actionBarSize"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <!-- Now fully visible below the Aflam bar -->
+    <TextView
+        android:id="@+id/tvSelectCinema"
+        android:text="Select a Cinema"
+        android:textSize="24sp"
+        android:textColor="#FFFFFF"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="12dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+    <!-- Cinema buttons -->
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <Button
+            android:id="@+id/btnVox"
+            android:text="VOX"
+            android:textAllCaps="false"
+            android:backgroundTint="#8E24AA"
+            android:textColor="#FFFFFF"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginVertical="4dp"/>
+
+        <Button
+            android:id="@+id/btnAMC"
+            android:text="AMC"
+            android:textAllCaps="false"
+            android:backgroundTint="#8E24AA"
+            android:textColor="#FFFFFF"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginVertical="4dp"/>
+
+        <Button
+            android:id="@+id/btnMuvi"
+            android:text="MUVI"
+            android:textAllCaps="false"
+            android:backgroundTint="#8E24AA"
+            android:textColor="#FFFFFF"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginVertical="4dp"/>
+
+        <Button
+            android:id="@+id/btnEmpire"
+            android:text="EMPIRE"
+            android:textAllCaps="false"
+            android:backgroundTint="#8E24AA"
+            android:textColor="#FFFFFF"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginVertical="4dp"/>
+
+    </LinearLayout>
+
+    <!-- Featured Offers -->
+    <TextView
+        android:text="🎟️ Featured Offers"
+        android:textSize="20sp"
+        android:textColor="#FFFFFF"
+        android:layout_marginTop="16dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvOffers"
+        android:layout_marginTop="8dp"
+        android:layout_width="match_parent"
+        android:layout_height="120dp"/>
+
+</LinearLayout>

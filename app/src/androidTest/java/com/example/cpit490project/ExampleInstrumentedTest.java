@@ -1,4 +1,4 @@
-package com.example.aflam;
+package com.example.cpit490project;
 
 import android.content.Context;
 
@@ -21,6 +21,6 @@ public class ExampleInstrumentedTest {
     public void useAppContext() {
         // Context of the app under test.
         Context appContext = InstrumentationRegistry.getInstrumentation().getTargetContext();
-        assertEquals("com.example.aflam", appContext.getPackageName());
+        assertEquals("com.example.cpit490project", appContext.getPackageName());
     }
 }

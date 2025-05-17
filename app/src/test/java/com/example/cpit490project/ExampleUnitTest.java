@@ -1,4 +1,4 @@
-package com.example.aflam;
+package com.example.cpit490project;
 
 import org.junit.Test;
 
