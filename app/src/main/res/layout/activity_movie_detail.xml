@@ -1,67 +1,75 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="16dp">
+    android:background="#121212"
+    android:paddingTop="?attr/actionBarSize">
 
     <LinearLayout
         android:orientation="vertical"
+        android:padding="16dp"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center_horizontal">
+        android:layout_height="wrap_content">
 
-        <!-- Poster ImageView with the correct ID -->
-        <ImageView
-            android:id="@+id/ivPoster"
-            android:layout_width="200dp"
-            android:layout_height="300dp"
-            android:scaleType="centerCrop"
-            android:contentDescription="@string/movie_poster" />
-
-        <!-- Movie title -->
+        <!-- City selector -->
         <TextView
-            android:id="@+id/tvTitle"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textSize="24sp"
-            android:textStyle="bold"
-            android:layout_marginTop="16dp" />
+            android:text="Select City"
+            android:textSize="20sp"
+            android:textColor="#FFF"
+            android:layout_marginBottom="8dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
 
-        <!-- Description -->
-        <TextView
-            android:id="@+id/tvDesc"
+        <HorizontalScrollView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp" />
+            android:layout_height="wrap_content">
 
-        <!-- Language -->
-        <TextView
-            android:id="@+id/tvLanguage"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp" />
+            <com.google.android.material.chip.ChipGroup
+                android:id="@+id/chipGroupCities"
+                app:singleSelection="true"
+                app:chipSpacing="8dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+        </HorizontalScrollView>
 
-        <!-- Genre -->
+        <!-- Date selector -->
         <TextView
-            android:id="@+id/tvGenre"
+            android:text="Select Date"
+            android:textSize="20sp"
+            android:textColor="#FFF"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="8dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+        <HorizontalScrollView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp" />
+            android:layout_height="wrap_content">
+
+            <com.google.android.material.chip.ChipGroup
+                android:id="@+id/chipGroupDates"
+                app:singleSelection="true"
+                app:chipSpacing="8dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+        </HorizontalScrollView>
 
         <!-- Showtimes list -->
         <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Showtimes"
-            android:textStyle="bold"
-            android:layout_marginTop="16dp" />
+            android:text="Showtime"
+            android:textSize="20sp"
+            android:textColor="#FFF"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="8dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rvShowtimes"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp" />
+            android:layout_height="wrap_content"/>
 
     </LinearLayout>
 </ScrollView>

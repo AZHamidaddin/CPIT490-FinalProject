@@ -1,39 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="350dp"
-    android:layout_height="wrap_content"
-    android:layout_margin="8dp"
-    app:cardCornerRadius="8dp"
-    app:cardElevation="4dp"
-    app:cardUseCompatPadding="true"
-    app:cardBackgroundColor="#212121"
-    android:clickable="true"
-    android:focusable="true">
+    xmlns:card="http://schemas.android.com/apk/res-auto"
+    card:cardCornerRadius="8dp"
+    android:layout_margin="4dp"
+    android:layout_width="200dp"
+    android:layout_height="match_parent">
 
-<LinearLayout
-android:orientation="vertical"
-android:padding="8dp"
-android:layout_width="match_parent"
-    android:layout_height="wrap_content">
-
-    <!-- Wider, but not too tall, so we get a rectangle -->
-<ImageView
-android:id="@+id/offer_image"
-android:layout_width="match_parent"
-android:layout_height="120dp"
-android:scaleType="centerCrop"/>
-
-<TextView
-android:id="@+id/offer_title"
-android:layout_width="match_parent"
-android:layout_height="wrap_content"
-android:textColor="@android:color/white"
-android:textSize="14sp"
-android:ellipsize="end"
-android:maxLines="2"
-android:includeFontPadding="false"
-android:layout_marginTop="6dp"/>
-    </LinearLayout>
-    </androidx.cardview.widget.CardView>
+    <ImageView
+        android:id="@+id/imgOffer"
+        android:scaleType="centerCrop"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+</androidx.cardview.widget.CardView>
